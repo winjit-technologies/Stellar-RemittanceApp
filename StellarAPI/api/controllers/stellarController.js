@@ -36,3 +36,41 @@ exports.CreateNewAccount = function(req, res) {
         });*/                            
     }  
 };
+
+exports.AccountDetails = function (req, res) {    
+    var accountId = req.body.accountId;
+    if (accountId) {
+        server.loadAccount(accountId).catch(function(error) {
+            return res.status(500).json({      
+                 "Result": [{
+                     "Error": "Account not active"                    
+                 }]
+             })   
+           }).then(function(account) {                  
+             if(!account)
+             {
+                 res.status(500).json({      
+                     "Result": [{
+                         "Error": "Account not active"                        
+                     }]
+                 })    
+             }
+             else{
+                 console.log('account is');
+                 console.log(account);    
+                 res.status(200).json({      
+                     "Result": [{
+                         "Response": account                        
+                     }]
+                 }) 
+             }            
+         });
+    }
+    else {
+        res.status(500).json({
+            "Result": [{
+                "Error": "Account Id is required"
+            }]
+        })
+    }
+}

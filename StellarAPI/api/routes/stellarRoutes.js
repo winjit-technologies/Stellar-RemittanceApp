@@ -8,4 +8,6 @@ module.exports = function(app) {
     .get(stellarcontroller.CreateNewAccount); 
 
  
+    app.route('/AccountDetails')
+    .post(stellarcontroller.AccountDetails)  ;
 };
