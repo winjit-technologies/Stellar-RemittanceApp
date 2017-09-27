@@ -7,7 +7,10 @@ module.exports = function(app) {
   app.route('/CreateNewAccount')
     .get(stellarcontroller.CreateNewAccount); 
 
- 
-    app.route('/AccountDetails')
+  app.route('/AccountDetails')
     .post(stellarcontroller.AccountDetails)  ;
+
+  app.route('/SendPayment')
+  .post(stellarcontroller.SendPayment)  ;  
+
 };

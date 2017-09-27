@@ -74,3 +74,97 @@ exports.AccountDetails = function (req, res) {
         })
     }
 }
+
+
+exports.SendPayment = function (req, res) {    
+    var srcAcct = req.body.srcAcct;
+    var destAcct = req.body.destAcct;
+    var srcSeed = req.body.srcSeed;
+    var amount = req.body.amount;
+
+    if(!srcAcct)
+    {
+        return res.status(500).json({      
+            "Result": [{           
+                "Error": "Source account public key required"               
+            }]
+        })  
+    }
+     if(!destAcct)
+    {
+        return res.status(500).json({      
+            "Result": [{           
+                "Error": "Destination account public key required"               
+            }]
+        })  
+    } 
+     if(!srcSeed)
+    {
+        return res.status(500).json({      
+            "Result": [{           
+                "Error": "Source account seed required"               
+            }]
+        }) 
+    }
+    if(!amount)
+    {
+        return res.status(500).json({      
+            "Result": [{           
+                "Error": "Amount to be sent required"               
+            }]
+        }) 
+    }
+
+    //check if source and destination account id's are valid
+
+    //check if the account is active
+    
+    server.loadAccount(destAcct)
+        .catch(StellarSdk.NotFoundError, function (error) {
+            return res.status(500).json({      
+                "Result": [{           
+                    "Error": "Destination Account not active"               
+                }]
+            }) 
+        })
+        .then(function (account) {
+            return server.loadAccount(srcAcct);
+        })
+        .catch(StellarSdk.NotFoundError, function (error) {
+            return res.status(500).json({      
+                "Result": [{           
+                    "Error": "Source Account not active "               
+                }]
+            })            
+        })
+        .then(function (srcAcct) {
+            //StellarSdk.Network.useTestNetwork();
+            StellarSdk.Network.usePublicNetwork();
+
+            var transaction = new StellarSdk.TransactionBuilder(srcAcct)
+                .addOperation(StellarSdk.Operation.payment({
+                    destination: destAcct,
+                    asset: StellarSdk.Asset.native(),
+                    amount: amount
+                }))
+                .build();
+
+            transaction.sign(StellarSdk.Keypair.fromSecret(srcSeed));
+            return server.submitTransaction(transaction);
+        })
+        .then(function (result) {
+            return res.status(200).json({      
+                "Result": [{
+                    "Status":"Payment Successful",           
+                    "Response": result              
+                }]
+            }) 
+        })
+        .catch(function (error) {
+            return res.status(500).json({      
+                "Result": [{           
+                    "Error": "Error while Processing Payment"              
+                }]
+            })  
+        });
+}
