@@ -168,3 +168,37 @@ exports.SendPayment = function (req, res) {
             })  
         });
 }
+
+
+exports.TransactionHistory = function (req, res) {   
+    var accountId = req.body.accountId;
+    if (accountId) {
+        server.transactions()
+        .forAccount(accountId)
+        .call()
+            .then(function (page) {
+                //console.log('Page 1: ');
+                res.status(200).json({
+                    "Result": [{
+                        "Response": page.records
+                    }]
+                })
+                console.log(page.records);
+               // return page.next();
+            })          
+            .catch(function (err) {
+                res.status(500).json({
+                    "Result": [{
+                        "Error": "Account does not exst or is not active"
+                    }]
+                })
+            }); 
+}
+else{
+    res.status(500).json({
+        "Result": [{
+            "Error": "Account Id is required"
+        }]
+    })
+}
+}

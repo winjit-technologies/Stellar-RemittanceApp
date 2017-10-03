@@ -13,4 +13,8 @@ module.exports = function(app) {
   app.route('/SendPayment')
   .post(stellarcontroller.SendPayment)  ;  
 
+  
+  app.route('/TransactionHistory')
+  .post(stellarcontroller.TransactionHistory)  ;    
+
 };
