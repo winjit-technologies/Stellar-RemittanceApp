@@ -9,12 +9,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.19.1"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "request": "^2.83.0",
-    "stellar-sdk": "^0.7.3"
+    "marked": "^0.6.2",
+    "request": "^2.88.0",
+    "stellar-sdk": "^1.0.2",
+    "url-parse": "^1.4.7"
   }
 }
